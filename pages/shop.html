@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shop</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <!-- optional external script (kept) -->
+  <script src="../script.js" defer></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Poppins', sans-serif; }
+
+    .shop-hero { background: url('../images/Rectangle 1.png'); padding: 60px 20px; color: #000; text-align: center; }
+    .shop-hero h1 { font-size: 2.5rem; font-weight: 600; margin-bottom: 8px; }
+    .shop-hero .breadcrumb { font-size: 0.9rem; color: #444; }
+    .shop-hero .breadcrumb a { color: inherit; text-decoration: none; }
+
+    .product-controls { display:flex; justify-content:space-between; align-items:center; background:#faf2e9; padding:1rem; flex-wrap:wrap; font-family:sans-serif; font-size:14px; }
+    .controls-left,.controls-right { display:flex; align-items:center; gap:1rem; flex-wrap:wrap; }
+    .input-small { width:50px; height:36px; padding:0 10px; border:none; border-radius:0; background:white; font-size:14px; text-align:center; color:#333; box-shadow:0 0 0 1px #e0e0e0 inset; }
+    .select { height:36px; padding:0 12px; border:none; background:white; font-size:14px; color:#999; box-shadow:0 0 0 1px #e0e0e0 inset; appearance:none; background-image: url("data:image/svg+xml;utf8,<svg fill='%23999' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>"); background-repeat:no-repeat; background-position:right 8px center; background-size:16px; }
+
+    .icon-btn { background:none; border:none; display:flex; align-items:center; justify-content:center; gap:6px; cursor:pointer; padding:.3rem .5rem; border-radius:4px; }
+    .icon-btn img { width:18px; height:18px; }
+    .icon-btn.active { background:#ddd; }
+
+    .view-toggle { display:flex; gap:.5rem; }
+
+    /* grid view styles */
+    #productContainer.grid-view { display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:1.5rem; padding:2rem; background:#fefefe; }
+
+    .product-card { position:relative; background:#fff; border:1px solid #eee; border-radius:6px; overflow:hidden; transition:box-shadow .3s ease; }
+    .product-card:hover { box-shadow:0 4px 10px rgba(0,0,0,.1); }
+
+    .product-image, .image-container { position:relative; width:100%; aspect-ratio:4/5; overflow:hidden; }
+    .product-image img, .image-container img { width:100%; height:100%; object-fit:cover; transition:transform .3s ease; }
+    .product-card:hover .product-image img, .product-card:hover .image-container img { transform:scale(1.05); }
+
+    .hover-overlay { position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(34,34,34,0.6); opacity:0; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:1rem; transition:opacity .3s ease; }
+    .product-card:hover .hover-overlay { opacity:1; }
+
+    .add-to-cart { padding:.5rem 1rem; background:white; color:#d09c4e; border:none; font-weight:bold; border-radius:4px; cursor:pointer; }
+    .product-info { padding:1rem; text-align:left; }
+    .product-info h4, .product-info h3 { margin:0 0 .2rem; font-size:16px; color:#333; }
+    .product-info p { font-size:14px; color:#777; margin:0 0 .3rem; }
+    .product-info strong, .product-info .price { font-size:14px; color:#111; font-weight:bold; }
+    .product-card h3 { font-size:1.2rem; margin:.5rem 0 0; }
+    .product-card p { font-size:.95rem; color:#666; margin-bottom:.5rem; }
+    .product-card .price { font-weight:bold; font-size:1rem; }
+    .product-card s { color:#aaa; font-size:.9rem; margin-left:.5rem; }
+
+    .badge { position:absolute; top:10px; left:10px; width:40px; height:40px; display:flex; align-items:center; justify-content:center; font-size:.8rem; font-weight:bold; color:#F4F5F7; background-color:#D09C4E; border-radius:50%; z-index:3; text-transform:uppercase; }
+    .badge.sale { background-color:#e94560; }
+    .badge.new { background-color:#2ecc71; right:10px; left:auto; }
+
+    /* list view styles */
+    #productContainer.list-view { display:flex; flex-direction:column; gap:1rem; padding:1rem; }
+    #productContainer.list-view .product-card { display:flex; align-items:center; gap:1rem; height:auto; }
+    #productContainer.list-view .product-image, #productContainer.list-view .image-container { flex:0 0 200px; height:200px; }
+    #productContainer.list-view .product-image img, #productContainer.list-view .image-container img { height:100%; object-fit:cover; }
+    #productContainer.list-view .product-info { flex:1; padding:0; }
+
+    @media (max-width: 600px) {
+      .text-small { font-size:14px; }
+      .product-info { padding:.75rem; }
+      #productContainer.grid-view { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+      #productContainer.list-view .product-image, #productContainer.list-view .image-container { flex:0 0 120px; height:120px; }
+    }
+
+    /* pagination styles */
+    .pagination { display:flex; justify-content:center; margin-top:20px; gap:8px; padding: 1.25rem 0; }
+    .pagination button { padding:8px 14px; border:none; background-color:#f5f0e6; color:#000; cursor:pointer; border-radius:4px; font-size:14px; transition:background-color .2s ease; }
+    .pagination button.active { background-color:#d4a762; color:#fff; }
+    .pagination button[disabled] { opacity:.5; cursor:default; }
+    .pagination button:hover:not([disabled]) { background-color:#e4d5c3; color:#fff; }
+    .feature-section {display: flex; justify-content: space-between; padding: 20px; background-color: #f5f5f5;}
+.feature-section {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #FAF3EA; /* Set the background to match the light color */
+    gap: 20px; /* Adds spacing between items */
+}
+
+.feature-item {
+    text-align: center;
+    width: 23%;
+    background-color: #FAF3EA;
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-item:hover {
+    transform: translateY(-5px); /* Adds slight lifting effect on hover */
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15); /* Increase shadow on hover */
+}
+
+.feature-item .icon {
+    margin-bottom: 15px;
+}
+
+.feature-item .icon img {
+    width: 50px; /* Slightly larger icon for better visibility */
+    height: 50px;
+}
+
+.feature-item .text h3 {
+    font-size: 18px;
+    margin: 10px 0;
+    font-weight: bold; /* Bold headings for better emphasis */
+}
+
+.feature-item .text p {
+    font-size: 14px;
+    color: #888; /* A softer color for the description */
+}
+
+  </style>
+</head>
+<body data-page="shop">
+  <div data-include="../header.html"></div>
+
+  <main>
+    <section class="shop-hero">
+      <div class="shop-hero-content">
+        <h1>Shop</h1>
+        <nav class="breadcrumb"><a href="/">Home</a> &gt; <span>Shop</span></nav>
+      </div>
+    </section>
+
+    <section class="product-controls">
+      <div class="controls-left">
+        <button class="icon-btn">
+          <img src="/images/Vector.png" alt="Filter" />
+          <span>Filter</span>
+        </button>
+
+        <div class="view-toggle">
+          <button id="gridBtn" class="icon-btn active" onclick="setView('grid')">
+            <img src="/images/Vector (1).png" alt="Grid View" />
+          </button>
+          <button id="listBtn" class="icon-btn" onclick="setView('list')">
+            <img src="/images/Vector (2).png" alt="List View" />
+          </button>
+        </div>
+
+        <div class="results-text">Showing <span id="res-start">—</span>–<span id="res-end">—</span> of <span id="res-total">—</span> results</div>
+      </div>
+
+      <div class="controls-right">
+        <label class="show-label"> Show
+          <!-- added id so script can reference it -->
+          <input type="number" id="itemsPerPage" value="16" min="1" class="input-small" />
+        </label>
+
+        <label class="sort-label"> Sort by
+          <select id="sortSelect" class="select">
+            <option value="default">Default</option>
+            <option value="lowToHigh">Price: Low to High</option>
+            <option value="highToLow">Price: High to Low</option>
+          </select>
+        </label>
+      </div>
+    </section>
+
+    <!-- SINGLE product container (only one ID!) -->
+    <section id="productContainer" class="grid-view">
+      <!-- Product Card 1 -->
+      <div class="product-card">
+        <div class="product-image">
+          <img src="images/furn1.jpg" alt="Product 1" />
+          <div class="hover-overlay">
+            <button class="add-to-cart" onclick="addToCart('Syltlerine')">Add to cart</button>
+          </div>
+        </div>
+        <div class="product-info">
+          <h4>Syltlerine</h4>
+          <p>Stylish cafe chair</p>
+          <strong class="price">Rp 2.500.000</strong>
+        </div>
+      </div>
+
+      <!-- Product Card 2 -->
+      <div class="product-card">
+        <div class="product-image">
+          <img src="images/furn2.jpg" alt="Product 2" />
+          <div class="hover-overlay">
+            <button class="add-to-cart" onclick="addToCart('Leviosa')">Add to cart</button>
+          </div>
+        </div>
+        <div class="product-info">
+          <h4>Leviosa</h4>
+          <p>Stylish cafe chair</p>
+          <strong class="price">Rp 2.500.000</strong>
+        </div>
+      </div>
+
+      <!-- Product Card 3 -->
+      <div class="product-card">
+        <span class="badge sale">-50%</span>
+        <div class="product-image">
+          <img src="images/image1 (3).png" alt="Lolito">
+          <div class="hover-overlay">
+            <button class="add-to-cart" onclick="addToCart('Lolito')">Add to cart</button>
+          </div>
+        </div>
+        <div class="product-info">
+          <h4>Lolito</h4>
+          <p>Luxury big sofa</p>
+          <span class="price">Rp 7.000.000 <s>Rp 14.000.000</s></span>
+        </div>
+      </div>
+
+      <!-- Product Card 4 -->
+      <div class="product-card">
+        <span class="badge new">New</span>
+        <div class="product-image">
+          <img src="images/image1 (4).png" alt="Respira">
+          <div class="hover-overlay">
+            <button class="add-to-cart" onclick="addToCart('Respira')">Add to cart</button>
+          </div>
+        </div>
+        <div class="product-info">
+          <h4>Respira</h4>
+          <p>Outdoor bar table and stool</p>
+          <span class="price">Rp 500.000</span>
+        </div>
+      </div>
+
+      <!-- Product Card 5 -->
+      <div class="product-card">
+        <div class="product-image">
+          <img src="images/image1 (5).png" alt="Grifo">
+          <div class="hover-overlay">
+            <button class="add-to-cart" onclick="addToCart('Grifo')">Add to cart</button>
+          </div>
+        </div>
+        <div class="product-info">
+          <h4>Grifo</h4>
+          <p>Night lamp</p>
+          <span class="price">Rp 1.500.000</span>
+        </div>
+      </div>
+
+      <!-- Product Card 6 -->
+      <div class="product-card">
+        <div class="product-image">
+          <img src="images/image 6.png" alt="Muggo">
+          <div class="hover-overlay">
+            <button class="add-to-cart" onclick="addToCart('Muggo')">Add to cart</button>
+          </div>
+        </div>
+        <div class="product-info">
+          <h4>Muggo</h4>
+          <p>Small mug</p>
+          <span class="price">Rp 150.000</span>
+        </div>
+      </div>
+
+      <!-- Product Card 7 -->
+      <div class="product-card">
+        <span class="badge sale">-50%</span>
+        <div class="product-image">
+          <img src="images/image 7.png" alt="Pingky">
+          <div class="hover-overlay">
+            <button class="add-to-cart" onclick="addToCart('Pingky')">Add to cart</button>
+          </div>
+        </div>
+        <div class="product-info">
+          <h4>Pingky</h4>
+          <p>Cute bed set</p>
+          <span class="price">Rp 7.000.000 <s>Rp 14.000.000</s></span>
+        </div>
+      </div>
+
+      <!-- Product Card 8 -->
+      <div class="product-card">
+        <span class="badge new">New</span>
+        <div class="product-image">
+          <img src="images/image 8.png" alt="Potty">
+          <div class="hover-overlay">
+            <button class="add-to-cart" onclick="addToCart('Leather')">Add to cart</button>
+          </div>
+        </div>
+        <div class="product-info">
+          <h4>Leather</h4>
+          <p>Minimalist flower pot</p>
+          <span class="price">Rp 500.000</span>
+        </div>
+      </div>
+
+
+      <!-- Product Card 9 -->
+<div class="product-card">
+  <div class="product-image">
+    <img src="/images/furn4.jpg" alt="Product 9" />
+    <div class="hover-overlay">
+      <button class="add-to-cart" onclick="addToCart('Syltlerine')">Add to cart</button>
+    </div>
+  </div>
+  <div class="product-info">
+    <h4>Syltlerine</h4>
+    <p>Stylish cafe chair</p>
+    <strong class="price">Rp 2.500.000</strong>
+  </div>
+</div>
+
+<!-- Product Card 10 -->
+<div class="product-card">
+  <div class="product-image">
+    <img src="images/furn5.jpg" alt="Product 10" />
+    <div class="hover-overlay">
+      <button class="add-to-cart" onclick="addToCart('Leviosa')">Add to cart</button>
+    </div>
+  </div>
+  <div class="product-info">
+    <h4>Leviosa</h4>
+    <p>Modern armchair</p>
+    <strong class="price">Rp 3.200.000</strong>
+  </div>
+</div>
+
+<!-- Product Card 11 -->
+<div class="product-card">
+  <div class="product-image">
+    <img src="/images/image 7.png" alt="Product 11" />
+    <div class="hover-overlay">
+      <button class="add-to-cart" onclick="addToCart('Lolito')">Add to cart</button>
+    </div>
+  </div>
+  <div class="product-info">
+    <h4>Lolito</h4>
+    <p>Luxury big sofa</p>
+    <strong class="price">Rp 7.000.000</strong>
+  </div>
+</div>
+
+<!-- Product Card 12-->
+<div class="product-card">
+  <div class="product-image">
+    <img src="/images/image 6.png" alt="Product 12" />
+    <div class="hover-overlay">
+      <button class="add-to-cart" onclick="addToCart('Respira')">Add to cart</button>
+    </div>
+  </div>
+  <div class="product-info">
+    <h4>Respira</h4>
+    <p>Outdoor table & stool</p>
+    <strong class="price">Rp 500.000</strong>
+  </div>
+</div>
+
+<!-- Product Card 13 -->
+<div class="product-card">
+  <div class="product-image">
+    <img src="/images/new2.jpg" alt="Product 13" />
+    <div class="hover-overlay">
+      <button class="add-to-cart" onclick="addToCart('Aurora Desk')">Add to cart</button>
+    </div>
+  </div>
+  <div class="product-info">
+    <h4>Aurora Desk</h4>
+    <p>Minimalist wooden desk</p>
+    <strong class="price">Rp 4.000.000</strong>
+  </div>
+</div>
+
+<!-- Product Card 14 -->
+<div class="product-card">
+  <div class="product-image">
+    <img src="/images/Rectangle 25.png" alt="Product 14" />
+    <div class="hover-overlay">
+      <button class="add-to-cart" onclick="addToCart('Velora Bed')">Add to cart</button>
+    </div>
+  </div>
+  <div class="product-info">
+    <h4>Velora Bed</h4>
+    <p>King-size platform bed</p>
+    <strong class="price">Rp 9.500.000</strong>
+  </div>
+</div>
+
+<!-- Product Card 15 -->
+<div class="product-card">
+  <div class="product-image">
+    <img src="images/furn7.jpg" alt="Product 15" />
+    <div class="hover-overlay">
+      <button class="add-to-cart" onclick="addToCart('Nova Bookshelf')">Add to cart</button>
+    </div>
+  </div>
+  <div class="product-info">
+    <h4>Nova Bookshelf</h4>
+    <p>Industrial style bookshelf</p>
+    <strong class="price">Rp 3.800.000</strong>
+  </div>
+</div>
+
+<!-- Product Card 16 -->
+<div class="product-card">
+  <div class="product-image">
+    <img src="images/image1 (1).png" alt="Product 16" />
+    <div class="hover-overlay">
+      <button class="add-to-cart" onclick="addToCart('Lumia Lamp')">Add to cart</button>
+    </div>
+  </div>
+  <div class="product-info">
+    <h4>Lumia Lamp</h4>
+    <p>Elegant floor lamp</p>
+    <strong class="price">Rp 1.500.000</strong>
+  </div>
+</div>
+
+    </section>
+
+    <!-- PAGINATION -->
+    <div id="pagination" class="pagination"></div>
+
+    <section class="feature-section">
+    <div class="feature-item">
+        <div class="icon">
+            <img src="/images/higq.png" alt="High Quality">
+        </div>
+        <div class="text">
+            <h3>High Quality</h3>
+            <p>crafted from top materials</p>
+        </div>
+    </div>
+    <div class="feature-item">
+        <div class="icon">
+            <img src="/images/waranty.png" alt="Warranty Protection">
+        </div>
+        <div class="text">
+            <h3>Warranty Protection</h3>
+            <p>Over 2 years</p>
+        </div>
+    </div>
+    <div class="feature-item">
+        <div class="icon">
+            <img src="/images/shipping.png" alt="Free Shipping">
+        </div>
+        <div class="text">
+            <h3>Free Shipping</h3>
+            <p>Order over 150 $</p>
+        </div>
+    </div>
+    <div class="feature-item">
+        <div class="icon">
+            <img src="/images/support.png" alt="24/7 Support">
+        </div>
+        <div class="text">
+            <h3>24 / 7 Support</h3>
+            <p>Dedicated support</p>
+        </div>
+    </div>
+    </section>
+
+  </main>
+
+  <div data-include="../footer.html"></div>
+
+  <script>
+    // View toggle and addToCart (kept simple)
+    function setView(view) {
+      const productContainer = document.getElementById('productContainer');
+      if (!productContainer) return;
+      if (view === 'grid') {
+        productContainer.classList.add('grid-view');
+        productContainer.classList.remove('list-view');
+        document.getElementById('gridBtn')?.classList.add('active');
+        document.getElementById('listBtn')?.classList.remove('active');
+      } else {
+        productContainer.classList.remove('grid-view');
+        productContainer.classList.add('list-view');
+        document.getElementById('listBtn')?.classList.add('active');
+        document.getElementById('gridBtn')?.classList.remove('active');
+      }
+    }
+
+    function addToCart(productName) {
+      alert(productName + ' has been added to your cart!');
+    }
+
+    /* ----------------- Pagination + Sorting logic ----------------- */
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('productContainer');
+      const paginationContainer = document.getElementById('pagination');
+      const itemsPerPageInput = document.getElementById('itemsPerPage');
+      const sortSelect = document.getElementById('sortSelect');
+      const resultsStart = document.getElementById('res-start');
+      const resultsEnd = document.getElementById('res-end');
+      const resultsTotal = document.getElementById('res-total');
+
+      // original product order & working array
+      const originalProducts = Array.from(container.querySelectorAll('.product-card'));
+      let products = originalProducts.slice();
+      let currentPage = 1;
+
+      function extractPrice(cardEl) {
+        if (!cardEl) return 0;
+        const priceEl = cardEl.querySelector('.price');
+        if (!priceEl) return 0;
+        // grab first numeric group (e.g. "2.500.000")
+        const txt = priceEl.innerText || priceEl.textContent || '';
+        const match = txt.replace(/\s/g, '').match(/(\d[\d\.,]*)/);
+        if (!match) return 0;
+        const digits = match[1].replace(/[^\d]/g, ''); // remove dots/commas
+        return parseInt(digits || '0', 10);
+      }
+
+      function updateResultsText(startIndex, endIndex, total) {
+        resultsStart.textContent = (total === 0 ? 0 : startIndex);
+        resultsEnd.textContent = endIndex;
+        resultsTotal.textContent = total;
+      }
+
+      function showPage(page) {
+        const itemsPerPage = Math.max(1, parseInt(itemsPerPageInput.value) || 1);
+        const total = products.length;
+        const totalPages = Math.max(1, Math.ceil(total / itemsPerPage));
+        if (page < 1) page = 1;
+        if (page > totalPages) page = totalPages;
+        currentPage = page;
+
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = Math.min(start + itemsPerPage, total);
+
+        products.forEach((p, idx) => {
+          p.style.display = (idx >= start && idx < end) ? '' : 'none';
+        });
+
+        // update results text
+        updateResultsText(total === 0 ? 0 : (start + 1), end, total);
+      }
+
+      function renderPagination() {
+        paginationContainer.innerHTML = '';
+        const itemsPerPage = Math.max(1, parseInt(itemsPerPageInput.value) || 1);
+        const total = products.length;
+        const totalPages = Math.max(1, Math.ceil(total / itemsPerPage));
+
+        // Prev
+        const prevBtn = document.createElement('button');
+        prevBtn.textContent = 'Prev';
+        prevBtn.disabled = currentPage === 1;
+        prevBtn.addEventListener('click', () => { currentPage = Math.max(1, currentPage - 1); updateDisplay(); });
+        paginationContainer.appendChild(prevBtn);
+
+        // page numbers (show all or smart window)
+        // Simple approach: show up to 7 buttons with ellipsis if needed
+        const maxButtons = 7;
+        let startPage = 1;
+        let endPage = totalPages;
+        if (totalPages > maxButtons) {
+          const half = Math.floor(maxButtons / 2);
+          startPage = Math.max(1, currentPage - half);
+          endPage = startPage + maxButtons - 1;
+          if (endPage > totalPages) { endPage = totalPages; startPage = endPage - maxButtons + 1; }
+        }
+
+        if (startPage > 1) {
+          const firstBtn = document.createElement('button');
+          firstBtn.textContent = '1';
+          firstBtn.addEventListener('click', () => { currentPage = 1; updateDisplay(); });
+          paginationContainer.appendChild(firstBtn);
+
+          if (startPage > 2) {
+            const dots = document.createElement('button');
+            dots.textContent = '...';
+            dots.disabled = true;
+            paginationContainer.appendChild(dots);
+          }
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+          const btn = document.createElement('button');
+          btn.textContent = String(i);
+          if (i === currentPage) btn.classList.add('active');
+          btn.addEventListener('click', () => { currentPage = i; updateDisplay(); });
+          paginationContainer.appendChild(btn);
+        }
+
+        if (endPage < totalPages) {
+          if (endPage < totalPages - 1) {
+            const dots = document.createElement('button');
+            dots.textContent = '...';
+            dots.disabled = true;
+            paginationContainer.appendChild(dots);
+          }
+          const lastBtn = document.createElement('button');
+          lastBtn.textContent = String(totalPages);
+          lastBtn.addEventListener('click', () => { currentPage = totalPages; updateDisplay(); });
+          paginationContainer.appendChild(lastBtn);
+        }
+
+        // Next
+        const nextBtn = document.createElement('button');
+        nextBtn.textContent = 'Next';
+        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.addEventListener('click', () => { currentPage = Math.min(totalPages, currentPage + 1); updateDisplay(); });
+        paginationContainer.appendChild(nextBtn);
+      }
+
+      function applySort(sortValue) {
+        if (sortValue === 'default') {
+          // restore original order
+          products = originalProducts.slice();
+        } else if (sortValue === 'lowToHigh') {
+          products.sort((a, b) => extractPrice(a) - extractPrice(b));
+        } else if (sortValue === 'highToLow') {
+          products.sort((a, b) => extractPrice(b) - extractPrice(a));
+        }
+        // re-attach to DOM in new order (keeps same elements)
+        products.forEach(p => container.appendChild(p));
+      }
+
+      function updateDisplay() {
+        // ensure itemsPerPage valid
+        let itemsPerPage = parseInt(itemsPerPageInput.value, 10);
+        if (!itemsPerPage || itemsPerPage < 1) { itemsPerPage = 1; itemsPerPageInput.value = 1; }
+        const sortValue = sortSelect.value;
+        applySort(sortValue);
+        // clamp currentPage
+        const totalPages = Math.max(1, Math.ceil(products.length / itemsPerPage));
+        if (currentPage > totalPages) currentPage = totalPages;
+
+        showPage(currentPage);
+        renderPagination();
+      }
+
+      // events
+      itemsPerPageInput.addEventListener('change', () => { currentPage = 1; updateDisplay(); });
+      itemsPerPageInput.addEventListener('input', () => { /* live feedback */ });
+
+      sortSelect.addEventListener('change', () => { currentPage = 1; updateDisplay(); });
+
+      // initial render
+      updateDisplay();
+    });
+  </script>
+</body>
+</html>

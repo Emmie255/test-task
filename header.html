@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+   * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    header {
+      width: 100%;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background-color: #fcfcfc;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 40px;
+      background-color: #fcfcfc;
+      flex-wrap: wrap;
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo {
+      width: 136px;
+    }
+
+    .nav-left {
+      display: flex;
+      gap: 5rem;
+      justify-content: center;
+      align-items: center;
+      margin-left: 40px;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      font-weight: 500;
+      color: black;
+    
+    }
+
+    .nav-link:hover {
+      background-color:rgba(238, 163, 119, 0.568);
+      border-radius: 10px;
+       transform: scale(1.1);
+    }
+    .nav-icon{
+        margin-top: 10px;
+        margin-right: 10px;
+     display: flex;
+  gap: 3rem; 
+}
+    .account,.search,.like,.cart{
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+    }
+    .nav-icon :hover {
+ background-color: rgba(0, 0, 0, 0.05);
+ transform: scale(1.5);
+} 
+</style>
+<script src="script.js"></script> 
+<body>
+<header>
+<div class="top-nav">
+    <div class="logo-section">
+      <img src="images/image.png" alt="Furniro" class="logo" />
+       </div>
+      <div class="nav-left" >
+         <a href="/index.html" class="nav-link">Home</a>
+    <a href="/pages/shop.html" class="nav-link">Shop</a>
+    <a href="about.html" class="nav-link">About Us</a>
+    <a href="contact.html" class="nav-link">Contact</a>
+      </div> 
+     <div class="nav-icon">
+     <img src="images/account.PNG" alt="Cart" class="account" />
+    <img src="images/search.PNG" alt="Account" class="search" />
+     <img src="images/like.PNG" alt="Account" class="like" />
+      <img src="images/cart.PNG" alt="Account" class="cart" />
+     </div>
+    </div>
+</header>   
+</body>
+</html>

@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Furniro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Poppins', sans-serif; }
+
+  header { width: 100%; position: sticky; top: 0; z-index: 1000; background-color: #fcfcfc; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+  .top-nav { display:flex; justify-content:space-between; align-items:center; padding:10px 40px; flex-wrap:wrap; }
+  .logo { width:136px; }
+  .nav-left { display:flex; gap:5rem; margin-left:40px; align-items:center; }
+  .nav-link { text-decoration:none; font-weight:500; color:black; padding:6px 8px; border-radius:8px; }
+  .nav-link:hover { background-color: rgba(238,163,119,0.568); transform:scale(1.05); }
+
+  .nav-icon { display:flex; gap:3rem; align-items:center; }
+  .nav-icon img { width:28px; height:28px; cursor:pointer; }
+
+  .hero { display:flex; justify-content:center; align-items:center; width:100vw; height:100vh; overflow:hidden; }
+  .hero-image-container{ position:relative; width:100%; height:100%; overflow:hidden; }
+  .hero-image-container img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .text-box-container { position:absolute; top:20%; left:45%; width:40%; height:67%; background:#FFF3E3; padding:2rem; border-radius:7px; color:#000; transform: translateX(-20%); }
+  .pretitle { font-size:15px; display:block; font-weight:600; margin-bottom:8px; }
+  .text-box-container h1 { font-size:56px; font-weight:700; color: rgb(207,176,37); text-shadow:#00000054; margin-bottom:12px; }
+  .text-box-container h2 { font-size:18px; font-weight:500; margin-bottom:1rem; }
+  .text-box-container button { background-color:#B88E2F; color:white; border:none; cursor:pointer; font-size:16px; padding:25px 72px; border-radius:6px; }
+  .text-box-container button:hover{ transform:scale(1.05); }
+
+  .range-section{ padding:4rem 2rem; text-align:center; background:#fff; }
+  .range-cards{ display:flex; flex-wrap:wrap; justify-content:center; gap:2rem; }
+  .range-card{ width:250px; border-radius:12px; overflow:hidden; box-shadow:0 4px 10px rgba(0,0,0,0.05); transition:transform .3s ease; }
+  .range-card:hover{ transform:translateY(-5px); }
+  .range-card img{ width:100%; display:block; border-radius:12px 12px 0 0; }
+
+  .product-section{ padding:4rem 2rem; text-align:center; background:#fff; }
+  .product-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(230px,1fr)); gap:2rem; max-width:1200px; margin:0 auto; }
+
+  .product-card{ position:relative; border:1px solid #eee; overflow:hidden; background:#F4F5F7; padding-bottom:12px; transition:box-shadow .3s ease; }
+  .product-card:hover{ box-shadow:0 4px 12px rgba(0,0,0,0.1); }
+  .image-container{ position:relative; overflow:hidden; width:100%; background:#fff; }
+  .product-card img{ width:100%; height:auto; display:block; }
+  /* renamed product overlay to avoid collision with carousel overlay */
+  .product-overlay{ position:absolute; top:0; left:0; height:100%; width:100%; background:rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .3s ease; z-index:2; }
+  .image-container:hover .product-overlay{ opacity:1; pointer-events:auto; }
+  .add-to-cart{ background:white; color:#B88E2F; border:none; padding:.6rem 1.5rem; font-weight:bold; cursor:pointer; transition:background .3s ease; }
+  .add-to-cart:hover{ background:#B88E2F; color:white; }
+
+  .actions{ display:flex; gap:1rem; font-size:.9rem; }
+  .product-card h3{ font-size:1.2rem; margin:0.5rem 0 0; }
+  .product-card p{ font-size:.95rem; color:#666; margin-bottom:.5rem; }
+  .product-card .price{ font-weight:bold; font-size:1rem; }
+
+  .badge { position:absolute; top:10px; left:10px; width:40px; height:40px; display:flex; align-items:center; justify-content:center; font-size:.8rem; font-weight:bold; color:#F4F5F7; background-color:#D09C4E; border-radius:50%; z-index:3; text-transform:uppercase; }
+  .badge.sale { background-color:#e94560; }
+  .badge.new { background-color:#2ecc71; right:10px; left:auto; }
+
+  .show-more-btn{ margin-top:2rem; padding:.8rem 2rem; font-size:1rem; background:#fff; color:#333; border:1px solid #B88E2F; cursor:pointer; }
+  .show-more-btn:hover { background:#B88E2F; color:#fff; }
+
+  .explore-section{ display:flex;  background-color: #FCF8F3; justify-content:space-between; align-items:flex-start; padding:60px 40px; gap:40px; flex-wrap:wrap; }
+  .explore-left { max-width: 400px;}
+  .explore-left h2 { font-size: 2rem; margin-bottom: 16px;}
+  .explore-left p {color: #666;margin-bottom: 20px;}
+  .explore-btn { padding: 10px 20px; background-color: #b89f72; color: white;  border: none;  border-radius: 4px;  cursor: pointer;}
+  .carousel-container{ flex:1; overflow:hidden; position:relative; max-width:700px; }
+  .carousel-content{ display:flex; align-items:center; gap:20px; transition:transform .5s ease-in-out; }
+  .carousel-item{ position:relative; transition:all .5s; border-radius:10px; overflow:hidden; }
+  .carousel-item img{ width:100%; height:auto; object-fit:cover; display:block; }
+  .carousel-item.main{ flex:0 0 60%; transform:scale(1); }
+  .carousel-item.side{ flex:0 0 35%; opacity:.6; transform:scale(.95); }
+  /* carousel overlay (keeps this separate from .product-overlay) */
+  .carousel-item .overlay{ position:absolute; bottom:20px; left:20px; background:#fff; padding:15px 20px; border-radius:8px; display:none; box-shadow:0 4px 8px rgba(0,0,0,0.1); }
+  .carousel-item:hover .overlay{ display:block; }
+  .carousel-nav { position: absolute;  top: 50%;  right: 20px;  transform: translateY(-50%);  z-index: 10;}
+  .arrow-btn{ background-color:#b89f72; color:white; padding:5px 10px; display:inline-block; margin-top:10px; border-radius:50%; }
+.carousel-nav button {  background-color: #b89f72;  color: white;  padding: 10px 14px;  border: none;  border-radius: 50%; cursor: pointer;  font-size: 18px;  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);}
+  .dots{ display:flex; justify-content:center; margin-top:15px; }
+  .dot{ height:10px; width:10px; margin:0 5px; background:#bbb; border-radius:50%; display:inline-block; transition:background-color .3s; }
+  .dot.active{ background:#333; }
+
+  .furniture-section{ padding:4rem 2rem; background:#fff; text-align:center; }
+  .furn-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); grid-auto-rows:200px; gap:1rem; max-width:1200px; margin:0 auto; }
+  .furn-grid img{ width:100%; height:100%; object-fit:cover; transition:transform .3s; }
+  .furn-grid img:hover{ transform:scale(1.03); }
+  .furn-grid .wide{ grid-column:span 2; }
+  .furn-grid .tall{ grid-row:span 2; }
+  .furn-grid .big{ grid-column:span 2; grid-row:span 2; }
+  .furn-grid .normal{ grid-column:span 1; grid-row:span 1; }
+</style>
+
+<header>
+  <div class="top-nav">
+    <div class="logo-section">
+      <img src="images/image.png" alt="Furniro" class="logo" />
+    </div>
+
+    <div class="nav-left">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="/pages/shop.html" class="nav-link">Shop</a>
+      <a href="about.html" class="nav-link">About Us</a>
+      <a href="contact.html" class="nav-link">Contact</a>
+    </div>
+
+    <div class="nav-icon">
+      <img src="images/account.PNG" alt="Account" class="account" />
+      <img src="images/search.PNG" alt="Search" class="search" />
+      <img src="images/like.PNG" alt="Like" class="like" />
+      <img src="images/cart.PNG" alt="Cart" class="cart" />
+    </div>
+  </div>
+</header>
+
+<section class="hero" aria-label="New Arrival Hero Section">
+  <div class="hero-image-container">
+    <img src="images/scandinavian-interior-mockup-wall-decal-background 1.png" alt="Bright modern interior room">
+    <div class="text-box-container">
+      <span class="pretitle">New Arrival</span>
+      <h1>Discover Our <br/>New Collection</h1>
+      <h2>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis.</h2>
+      <button>Buy Now</button>
+    </div>
+  </div>
+</section>
+
+<section class="range-section">
+  <div class="range-header">
+    <h2>Browse The Range</h2>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+  </div>
+
+  <div class="range-cards">
+    <div class="range-card">
+      <img src="images/Mask Group.png" alt="Dining">
+      <h3>Dining</h3>
+    </div>
+    <div class="range-card">
+      <img src="images/Image-living room.png" alt="Living">
+      <h3>Living</h3>
+    </div>
+    <div class="range-card">
+      <img src="images/image 101.png" alt="Bedroom">
+      <h3>Bedroom</h3>
+    </div>
+  </div>
+</section>
+
+<section class="product-section">
+  <h2>Our Products</h2>
+
+  <div class="product-grid">
+    <!-- Product 1 -->
+    <div class="product-card">
+      <span class="badge sale">-30%</span>
+      <div class="image-container">
+        <img src="images/image1 (1).png" alt="Sytherine">
+        <div class="product-overlay">
+          <button class="add-to-cart">Add to cart</button>
+        </div>
+      </div>
+      <h3>Sytherine</h3>
+      <p>Stylish cafe chair</p>
+      <span class="price">Rp 2.500.000</span>
+    </div>
+
+    <!-- Product 2 -->
+    <div class="product-card">
+      <div class="image-container">
+        <img src="images/image1 (2).png" alt="Leviosa">
+        <div class="product-overlay">
+          <button class="add-to-cart">Add to cart</button>
+        </div>
+      </div>
+      <h3>Leviosa</h3>
+      <p>Stylish cafe chair</p>
+      <span class="price">Rp 2.500.000</span>
+    </div>
+
+    <!-- Product 3 -->
+    <div class="product-card">
+      <span class="badge sale">-50%</span>
+      <div class="image-container">
+        <img src="images/image1 (3).png" alt="Lolito">
+        <div class="product-overlay">
+          <button class="add-to-cart">Add to cart</button>
+        </div>
+      </div>
+      <h3>Lolito</h3>
+      <p>Luxury big sofa</p>
+      <span class="price">Rp 7.000.000 <s>Rp 14.000.000</s></span>
+    </div>
+
+    <!-- Product 4 -->
+    <div class="product-card">
+      <span class="badge new">New</span>
+      <div class="image-container">
+        <img src="images/image1 (4).png" alt="Respira">
+        <div class="product-overlay">
+          <button class="add-to-cart">Add to cart</button>
+        </div>
+      </div>
+      <h3>Respira</h3>
+      <p>Outdoor bar table and stool</p>
+      <span class="price">Rp 500.000</span>
+    </div>
+
+    <!-- Product 5 -->
+    <div class="product-card">
+      <div class="image-container">
+        <img src="images/image1 (5).png" alt="Grifo">
+        <div class="product-overlay">
+          <button class="add-to-cart">Add to cart</button>
+        </div>
+      </div>
+      <h3>Grifo</h3>
+      <p>Night lamp</p>
+      <span class="price">Rp 1.500.000</span>
+    </div>
+
+    <!-- Product 6 -->
+    <div class="product-card">
+      <div class="image-container">
+        <img src="images/image 6.png" alt="Muggo">
+        <div class="product-overlay">
+          <button class="add-to-cart">Add to cart</button>
+        </div>
+      </div>
+      <h3>Muggo</h3>
+      <p>Small mug</p>
+      <span class="price">Rp 150.000</span>
+    </div>
+
+    <!-- Product 7 -->
+    <div class="product-card">
+      <span class="badge sale">-50%</span>
+      <div class="image-container">
+        <img src="images/image 7.png" alt="Pingky">
+        <div class="product-overlay">
+          <button class="add-to-cart">Add to cart</button>
+        </div>
+      </div>
+      <h3>Pingky</h3>
+      <p>Cute bed set</p>
+      <span class="price">Rp 7.000.000 <s>Rp 14.000.000</s></span>
+    </div>
+
+    <!-- Product 8 -->
+    <div class="product-card">
+      <span class="badge new">New</span>
+      <div class="image-container">
+        <img src="images/image 8.png" alt="Potty">
+        <div class="product-overlay">
+          <button class="add-to-cart">Add to cart</button>
+        </div>
+      </div>
+      <h3>Potty</h3>
+      <p>Minimalist flower pot</p>
+      <span class="price">Rp 500.000</span>
+    </div>
+  </div>
+
+  <button class="show-more-btn">Show More</button>
+</section>
+
+<section class="explore-section">
+  <div class="explore-left">
+    <h2>50+ Beautiful rooms inspiration</h2>
+    <p>Our designer already made a lot of beautiful prototype of rooms that inspire you</p>
+    <button class="explore-btn">Explore More</button>
+  </div>
+
+  <div class="carousel-container">
+    <div class="carousel-content" id="carousel"></div>
+    <div class="carousel-nav">
+      <button id="next">❯</button>
+    </div>
+    <div class="dots pagination-dots">
+      <span class="dot active"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+  </div>
+</section>
+
+<section class="furniture-section">
+  <div class="furniture-header">
+    <p>Share your setup with</p>
+    <h2>#FuniroFurniture</h2>
+  </div>
+  <div class="furn-grid">
+    <img src="images/furn3.jpg" class="wide" alt="Setup 1">
+    <img src="images/new1.jpg" class="wide" alt="Setup 2">
+    <img src="images/furn1.jpg" class="tall" alt="Setup 3">
+    <img src="images/furn2.jpg" class="big" alt="Setup 4">
+    <img src="images/furn5.jpg" class="normal" alt="Setup 5">
+    <img src="images/furn4.jpg" class="normal" alt="Setup 6">
+    <img src="images/new2.jpg" class="wide" alt="Setup 7">
+    <img src="images/furn 10.jpg" class="normal" alt="Setup 8">
+  </div>
+</section>
+
+ <div data-include="../footer.html"></div>
+<!-- Scripts placed at the bottom so DOM is available -->
+<script>
+  // Carousel data + functions
+  const carouselData = [
+    { img: 'images/Rectangle 24.png', title: 'Inner Peace', room: '01 — Bed Room' },
+    { img: 'images/Rectangle 25.png', title: 'Comfort Space', room: '02 — Living Room' },
+    { img: 'images/ractangle 27.jpg', title: 'Clean Vibes', room: '03 — Dining' }
+  ];
+
+  // Optional include function (keeps your original idea)
+  function includeHTML() {
+    document.querySelectorAll('[data-include]').forEach(el => {
+      const file = el.getAttribute('data-include');
+      if (!file) return;
+      fetch(file)
+        .then(res => {
+          if (!res.ok) throw new Error(`Could not fetch ${file}`);
+          return res.text();
+        })
+        .then(text => el.innerHTML = text)
+        .catch(err => console.error('Include error:', err));
+    });
+  }
+
+  function initShopPage() {
+    const carouselContainer = document.getElementById('carousel');
+    const dots = document.querySelectorAll('.dot');
+    const nextBtn = document.getElementById('next');
+
+    if (!carouselContainer || !nextBtn || dots.length === 0) {
+      console.warn('Carousel elements not found - skipping carousel init');
+      return;
+    }
+
+    function renderCarousel() {
+      carouselContainer.innerHTML = '';
+      carouselData.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.classList.add('carousel-item', index === 0 ? 'main' : 'side');
+        div.innerHTML = `
+          <img src="${item.img}" alt="Room ${index + 1}">
+          <div class="overlay">
+            <span>${item.room}</span>
+            <h3>${item.title}</h3>
+            <div class="arrow-btn">→</div>
+          </div>
+        `;
+        carouselContainer.appendChild(div);
+      });
+      updateDots();
+    }
+
+    function updateDots() {
+      dots.forEach(d => d.classList.remove('active'));
+      if (dots[0]) dots[0].classList.add('active');
+    }
+
+    nextBtn.addEventListener('click', () => {
+      const first = carouselData.shift();
+      carouselData.push(first);
+      renderCarousel();
+    });
+
+    renderCarousel();
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    includeHTML();   // if you use data-include attributes elsewhere
+    initShopPage();  // initialize carousel safely after DOM ready
+  });
+</script>
+
+</body>
+</html>

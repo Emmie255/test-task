@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="script.js"></script> 
+
+    <style>
+.footer {
+    background-color: #fafafa;
+    padding: 40px 20px;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    border-top: 1px solid #e5e5e5;
+}
+
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.footer-column {
+    width: 23%;
+    padding: 10px;
+}
+
+.footer-column h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.footer-column h4 {
+    font-size: 16px;
+    margin-bottom: 15px;
+    font-weight: bold;
+    color: #7c7c7c;
+}
+
+.footer-column address {
+    font-size: 14px;
+    color: #777;
+}
+
+.footer-column ul {
+    list-style: none;
+    color: #000000;
+    padding: 0;
+}
+
+.footer-column ul li {
+    margin: 8px 0;
+    color: solid#000000;
+     font-weight: bold;
+}
+
+.footer-column ul li a {
+    text-decoration: none;
+    color: #333;
+    transition: color 0.3s;
+}
+
+.footer-column ul li a:hover {
+    color: #2f2f30;
+}
+
+.footer-column.newsletter {
+  font-family: Arial, sans-serif;
+}
+
+.footer-column.newsletter h4 {
+  font-size: 14px;
+  color: #999;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.newsletter-form {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #999;
+  max-width: 300px;
+}
+
+.newsletter-form input[type="email"] {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 12px;
+  padding: 5px 0;
+  color: #666;
+}
+
+.newsletter-form input::placeholder {
+  color: #999;
+}
+
+.newsletter-form button {
+  background: none;
+  border: none;
+  color: #000;
+  font-weight: bold;
+  font-size: 12px;
+  cursor: pointer;
+  padding-left: 10px;
+}
+
+.newsletter-form button:hover {
+  text-decoration: underline;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 20px;
+    font-size: 14px;
+    color: #888;
+}
+
+hr {
+    margin-top: 30px;
+    border: 0;
+    border-top: 1px solid #e5e5e5;
+}
+    </style>
+</head>
+<body>
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-column">
+      <h3 class="logo">Funiro.</h3>
+      <address>
+        400 University Drive Suite 200 Coral Gables,<br>
+        FL 33134 USA
+      </address>
+    </div>
+
+    <div class="footer-column">
+      <h4>Links</h4>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Shop</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-column">
+      <h4>Help</h4>
+      <ul>
+        <li><a href="#">Payment Options</a></li>
+        <li><a href="#">Returns</a></li>
+        <li><a href="#">Privacy Policies</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-column newsletter">
+      <h4>Newsletter</h4>
+      <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Subscribed!');">
+        <input type="email" placeholder="Enter Your Email Address">
+        <button type="submit">SUBSCRIBE</button>
+      </form>
+    </div>
+  </div>
+
+  <hr>
+  <div class="footer-bottom">
+    <p>2023 Funiro. All rights reserved</p>
+  </div>
+</footer>
+
+</body>
+</html>
